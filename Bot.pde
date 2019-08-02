@@ -1,5 +1,7 @@
 abstract class Bot {
   
+  boolean dead = false;
+  
   PVector loc = new PVector();
   
   Bot() {
@@ -11,9 +13,21 @@ abstract class Bot {
   PVector dir = new PVector();
   void push(PVector vector) {
     dir.add(vector.normalize());
-    dir.normalize();
+    if (dir.mag() > 2)
+      dir.setMag(2);
   }
   
+  void push(float x, float y) {
+    push(new PVector(x, y));
+  }
+  
+  //---------------------------------------
+  
+  
+  
+  
+  
+  //---------------------------------------
   
   boolean CHARGING = false;
   
@@ -31,8 +45,8 @@ abstract class Bot {
     case 0:
       attack = new AttackSweep(this, dir, param, time);
       break;
-    case 1:
-      attack = new AttackStrike(this, dir, param, time);
+    //case 1:
+    //  attack = new AttackStrike(this, dir, param, time);
     }
     
     CHARGING = true;
@@ -43,6 +57,10 @@ abstract class Bot {
       CHARGING = false;
       attack.hit();
     }
+  }
+  
+  int attackWeight() {
+    return attack.weight;
   }
   
   
@@ -69,6 +87,8 @@ abstract class Bot {
     if (loc.y > 999)
       loc.y = 999;
     
+    dir.mult(0.95);
+    
     if (CHARGING) {
       chargeAttack();
     }
@@ -81,6 +101,7 @@ abstract class Bot {
   void sketch() {
     fill(255);
     circle(loc.x, loc.y, 20);
+    text(CHARGING ? "true" : "false", loc.x - 20, loc.y - 20);
   }
   
 }
